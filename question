@@ -1,0 +1,40 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+
+def elec_info_code():
+    file = open("sample_elec_codes.csv")
+    text = file.read()
+    matches = re.findall("[0-9]{8}", text)
+    result = []
+    for match in matches:
+        result.append(match)
+    return result
+
+
+def elec_info_crawl(num):
+    url = "http://www.keca.or.kr/ecic/ad/ad0101D.do?menuCd=6047&currentPageNo=1&license={}&gubun=detail&sido=51&hoeyn=&searchSido=&searchSigungu=&searchGubun=company&searchText=&CSRFToken=8ab9292a-389d-40b3-979a-4a7815959e3a".format(
+        num)
+    req = requests.get(url)
+    cont = req.content
+    return cont
+
+def elec_info_parse(fanalPage):
+    soup = BeautifulSoup(fanalPage, "html.parser")
+    return  soup
+
+nums = elec_info_code()
+for num in nums:
+    html = elec_info_crawl(num)
+    pageString = elec_info_parse(html)
+    # file = open("{}.txt".format(num), "w+")
+    # file.write(pageString)
+    # file.close()
+    # print(pageString)
+
+     #elec_info_crawl(num) 요 함수에 들어가는 파라메타가 수천개 입니다.
+    # 각 페이지를 일단 저장을 한 후 파싱을 하려면
+    # 우선 html을 파싱 가능 형태로 저장을 하고 싶은데
+    # 저장할때 하나의 새로운 폴더에 파라메타 값으로 파일이 생성되게끔 하는게 정신건강에 좋을듯 싶습니다.
+    # 어떻게 접근을 해야 할까요>?
+    #지도편달 부탁드립니다.
